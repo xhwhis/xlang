@@ -20,6 +20,12 @@
     print a;
     print a++;
     print ++a;
-    def b = [1, 2];
-    print b++;
+    def b = ++a;
+    print b, a;
+    print a++ * 2;
+    print 3 ^ 4;
+    print 3 & 4;
+    print 3 | 4;
+    print 3 << 4;
+    print 1024 >> 4;
 }

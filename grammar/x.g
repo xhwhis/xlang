@@ -21,19 +21,37 @@ defid
     : ID^ (ASSIGN! condition_expr)?
     ;
 
-expr: multExpr ((PLUS^ | MINUS^) multExpr)*
-    | DOUBLE_PLUS ID -> ^(L_DOUBLE_PLUS ID)
-    | ID DOUBLE_PLUS -> ^(R_DOUBLE_PLUS ID)
-    | DOUBLE_MINUS ID -> ^(L_DOUBLE_MINUS ID)
-    | ID DOUBLE_MINUS -> ^(R_DOUBLE_MINUS ID)
+expr
+    : bit_orExpr (BIT_OR^ bit_orExpr)*
+    ;
+
+bit_orExpr
+    : bit_xorExpr (BIT_XOR^ bit_xorExpr)*
+    ;
+
+bit_xorExpr
+    : bit_andExpr (BIT_AND^ bit_andExpr)*
+    ;
+
+bit_andExpr
+    : shiftExpr ((L_SHIFT^ | R_SHIFT^) shiftExpr)*
+    ;
+
+shiftExpr
+    : multExpr ((PLUS^ | MINUS^) multExpr)*
     ;
 
 multExpr
     : atom ((TIMES^ | DIV^ | MOD^) atom)*
     ;
 
-atom: INT
+atom
+    : INT
     | ID
+    | DOUBLE_PLUS ID -> ^(L_DOUBLE_PLUS ID)
+    | ID DOUBLE_PLUS -> ^(R_DOUBLE_PLUS ID)
+    | DOUBLE_MINUS ID -> ^(L_DOUBLE_MINUS ID)
+    | ID DOUBLE_MINUS -> ^(R_DOUBLE_MINUS ID)
     | STRING
     | FLOAT
     | func_call
@@ -42,11 +60,17 @@ atom: INT
     | '('! expr ')'!
     ;
 
-list_atom: '['! exprs? ']'!;
+list_atom
+    : '['! exprs? ']'!
+    ;
 
-exprs: expr (','! expr)*;
+exprs
+    : expr (','! expr)*
+    ;
 
-list_id: ID '['! expr ']'!;
+list_id
+    : ID '['! expr ']'!
+    ;
 
 if_expr
     : IF^ '('! condition_expr ')'! stmt ( (ELSE) => ELSE! stmt )?
@@ -74,6 +98,11 @@ for_do_expr
     | ID TIMES ASSIGN expr -> ^(ASSIGN ID ^(TIMES ID expr))
     | ID DIV ASSIGN expr -> ^(ASSIGN ID ^(DIV ID expr))
     | ID MOD ASSIGN expr -> ^(ASSIGN ID ^(MOD ID expr))
+    | ID BIT_AND ASSIGN expr -> ^(ASSIGN ID ^(BIT_AND ID expr))
+    | ID BIT_OR ASSIGN expr -> ^(ASSIGN ID ^(BIT_OR ID expr))
+    | ID BIT_XOR ASSIGN expr -> ^(ASSIGN ID ^(BIT_XOR ID expr))
+    | ID L_SHIFT ASSIGN expr -> ^(ASSIGN ID ^(L_SHIFT ID expr))
+    | ID R_SHIFT ASSIGN expr -> ^(ASSIGN ID ^(R_SHIFT ID expr))
     | DOUBLE_PLUS ID -> ^(L_DOUBLE_PLUS ID)
     | ID DOUBLE_PLUS -> ^(R_DOUBLE_PLUS ID)
     | DOUBLE_MINUS ID -> ^(L_DOUBLE_MINUS ID)
@@ -110,7 +139,9 @@ cond_atom
     | -> ^(NOPE)
     ;
 
-block: block_expr -> ^(BLOCK block_expr);
+block
+    : block_expr -> ^(BLOCK block_expr)
+    ;
 
 block_expr
     : '{'! (stmt)* '}'!
@@ -129,6 +160,11 @@ expr_stmt
     | ID TIMES ASSIGN expr ';' -> ^(ASSIGN ID ^(TIMES ID expr))
     | ID DIV ASSIGN expr ';' -> ^(ASSIGN ID ^(DIV ID expr))
     | ID MOD ASSIGN expr ';' -> ^(ASSIGN ID ^(MOD ID expr))
+    | ID BIT_AND ASSIGN expr ';' -> ^(ASSIGN ID ^(BIT_AND ID expr))
+    | ID BIT_OR ASSIGN expr ';' -> ^(ASSIGN ID ^(BIT_OR ID expr))
+    | ID BIT_XOR ASSIGN expr ';' -> ^(ASSIGN ID ^(BIT_XOR ID expr))
+    | ID L_SHIFT ASSIGN expr ';' -> ^(ASSIGN ID ^(L_SHIFT ID expr))
+    | ID R_SHIFT ASSIGN expr ';' -> ^(ASSIGN ID ^(R_SHIFT ID expr))
     | PRINT^ print_atom (','! print_atom)* ';'!
     ;
 
@@ -143,34 +179,43 @@ control_stmt
     | RETURN^ condition_expr ';'!
     ;
 
-func_stmt: FUNC^ ID param block;
+func_stmt
+    : FUNC^ ID param block
+    ;
 
 param
     : '(' id_param? ')' -> ^(PARAM id_param?)
     ;
 
-id_param: ID (','! ID)*;
+id_param
+    : ID (','! ID)*
+    ;
 
-func_call: ID param_expr -> ^(FUNC_CALL ID param_expr);
+func_call
+    : ID param_expr -> ^(FUNC_CALL ID param_expr)
+    ;
 
 param_expr
     : '(' cond_param ')' -> ^(PARAM cond_param)
     ;
 
-cond_param: condition_expr (','! condition_expr)*;
+cond_param
+    : condition_expr (','! condition_expr)*
+    ;
 
-stmt: expr_stmt
+stmt
+    : expr_stmt
     | control_stmt
     | func_stmt
     ;
 
 prog: 
     (stmt {
-            #ifdef DEBUG
+            //#ifdef DEBUG
             pANTLR3_STRING s = $stmt.tree->toStringTree($stmt.tree);
             assert(s->chars);
             printf("tree \%s\n", s->chars);
-            #endif
+            //#endif
         }
     )+
     ;
@@ -183,14 +228,19 @@ MINUS: '-';
 TIMES: '*';
 DIV: '/';
 MOD: '%';
+BIT_AND: '&';
+BIT_OR: '|';
+BIT_XOR: '^';
+L_SHIFT: '<<';
+R_SHIFT: '>>';
 DOUBLE_PLUS: '++';
 L_DOUBLE_PLUS: '++L';
 R_DOUBLE_PLUS: 'R++';
 DOUBLE_MINUS: '--';
 L_DOUBLE_MINUS: '--L';
 R_DOUBLE_MINUS: 'R--';
-OR: '||';
 AND: '&&';
+OR: '||';
 GE: '>=' | '=>';
 NE: '!=';
 LITTLE: '<';

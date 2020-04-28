@@ -57,6 +57,11 @@ namespace xlang {
             case TIMES:
             case DIV:
             case MOD:
+            case BIT_AND:
+            case BIT_OR:
+            case BIT_XOR:
+            case L_SHIFT:
+            case R_SHIFT:
             case L_DOUBLE_PLUS:
             case R_DOUBLE_PLUS:
             case L_DOUBLE_MINUS:
@@ -82,13 +87,13 @@ namespace xlang {
     bool ConditionFactoryHandler::is_valid(ASTree *tree) {
         switch (tree->type()) {
             case OR:
+            case AND:
             case GE:
             case GT:
             case LE:
             case LITTLE:
             case EQ:
-            case NE:
-            case AND: return true;
+            case NE: return true;
             default : return false;
         }
         return false;

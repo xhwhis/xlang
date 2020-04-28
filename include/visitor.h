@@ -87,6 +87,36 @@ namespace xlang {
         IntValueModOpVisitor(IntValue *);
         void visit(IntValue *);
     };
+    
+    class IntValueAndOpVisitor : public IntValueOperator {
+    public:
+        IntValueAndOpVisitor(IntValue *);
+        void visit(IntValue *);
+    };
+    
+    class IntValueOrOpVisitor : public IntValueOperator {
+    public:
+        IntValueOrOpVisitor(IntValue *);
+        void visit(IntValue *);
+    };
+    
+    class IntValueXorOpVisitor : public IntValueOperator {
+    public:
+        IntValueXorOpVisitor(IntValue *);
+        void visit(IntValue *);
+    };
+    
+    class IntValueLShiftOpVisitor : public IntValueOperator {
+    public:
+        IntValueLShiftOpVisitor(IntValue *);
+        void visit(IntValue *);
+    };
+    
+    class IntValueRShiftOpVisitor : public IntValueOperator {
+    public:
+        IntValueRShiftOpVisitor(IntValue *);
+        void visit(IntValue *);
+    };
 
     class IntValueLittleOpVisitor : public IntValueOperator {
     public:

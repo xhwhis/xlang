@@ -110,6 +110,31 @@ namespace xlang {
                 SIValue b = Runtime::GetValue(tree->at(1), p);
                 return (*a) % (*b);
             }
+            case BIT_AND: {
+                SIValue a = Runtime::GetValue(tree->at(0), p);
+                SIValue b = Runtime::GetValue(tree->at(1), p);
+                return (*a) & (*b);
+            }
+            case BIT_OR: {
+                SIValue a = Runtime::GetValue(tree->at(0), p);
+                SIValue b = Runtime::GetValue(tree->at(1), p);
+                return (*a) | (*b);
+            }
+            case BIT_XOR: {
+                SIValue a = Runtime::GetValue(tree->at(0), p);
+                SIValue b = Runtime::GetValue(tree->at(1), p);
+                return (*a) ^ (*b);
+            }
+            case L_SHIFT: {
+                SIValue a = Runtime::GetValue(tree->at(0), p);
+                SIValue b = Runtime::GetValue(tree->at(1), p);
+                return (*a) << (*b);
+            }
+            case R_SHIFT: {
+                SIValue a = Runtime::GetValue(tree->at(0), p);
+                SIValue b = Runtime::GetValue(tree->at(1), p);
+                return (*a) >> (*b);
+            }
             case L_DOUBLE_PLUS: {
                 std::string var = tree->at(0)->text();
                 SIValue a = Runtime::GetValue(tree->at(0), p);

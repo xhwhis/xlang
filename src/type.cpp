@@ -126,6 +126,31 @@ namespace xlang {
         return xlang::null_val;
     }
     
+    SIValue IValue::operator&(IValue &obj) {
+        this->operator_and_error(obj);
+        return xlang::null_val;
+    }
+    
+    SIValue IValue::operator|(IValue &obj) {
+        this->operator_or_error(obj);
+        return xlang::null_val;
+    }
+    
+    SIValue IValue::operator^(IValue &obj) {
+        this->operator_xor_error(obj);
+        return xlang::null_val;
+    }
+    
+    SIValue IValue::operator<<(IValue &obj) {
+        this->operator_lshift_error(obj);
+        return xlang::null_val;
+    }
+    
+    SIValue IValue::operator>>(IValue &obj) {
+        this->operator_rshift_error(obj);
+        return xlang::null_val;
+    }
+    
     bool IValue::operator<(IValue &obj) {
         this->operator_compare_error(obj);
         return false;
@@ -186,6 +211,41 @@ namespace xlang {
         return ;
     }
     
+    void IValue::operator_and_error(IValue &obj) {
+        std::string msg = "unsupported operand type(s) for &: ";
+        msg += this->type() + " & " + obj.type();
+        throw std::runtime_error(msg);
+        return ;
+    }
+    
+    void IValue::operator_or_error(IValue &obj) {
+        std::string msg = "unsupported operand type(s) for |: ";
+        msg += this->type() + " | " + obj.type();
+        throw std::runtime_error(msg);
+        return ;
+    }
+    
+    void IValue::operator_xor_error(IValue &obj) {
+        std::string msg = "unsupported operand type(s) for ^: ";
+        msg += this->type() + " ^ " + obj.type();
+        throw std::runtime_error(msg);
+        return ;
+    }
+    
+    void IValue::operator_lshift_error(IValue &obj) {
+        std::string msg = "unsupported operand type(s) for <<: ";
+        msg += this->type() + " << " + obj.type();
+        throw std::runtime_error(msg);
+        return ;
+    }
+    
+    void IValue::operator_rshift_error(IValue &obj) {
+        std::string msg = "unsupported operand type(s) for >>: ";
+        msg += this->type() + " >> " + obj.type();
+        throw std::runtime_error(msg);
+        return ;
+    }
+    
     void IValue::operator_compare_error(IValue &obj) {
         std::string msg = "(" + this->type() + " vs " + obj.type();
         msg += ") can not be compared!";
@@ -224,6 +284,36 @@ namespace xlang {
     
     SIValue IntValue::operator%(IValue &obj) {
         IntValueModOpVisitor vis(this);
+        obj.accept(&vis);
+        return vis.result;
+    }
+    
+    SIValue IntValue::operator&(IValue &obj) {
+        IntValueAndOpVisitor vis(this);
+        obj.accept(&vis);
+        return vis.result;
+    }
+    
+    SIValue IntValue::operator|(IValue &obj) {
+        IntValueOrOpVisitor vis(this);
+        obj.accept(&vis);
+        return vis.result;
+    }
+    
+    SIValue IntValue::operator^(IValue &obj) {
+        IntValueXorOpVisitor vis(this);
+        obj.accept(&vis);
+        return vis.result;
+    }
+    
+    SIValue IntValue::operator<<(IValue &obj) {
+        IntValueLShiftOpVisitor vis(this);
+        obj.accept(&vis);
+        return vis.result;
+    }
+    
+    SIValue IntValue::operator>>(IValue &obj) {
+        IntValueRShiftOpVisitor vis(this);
         obj.accept(&vis);
         return vis.result;
     }

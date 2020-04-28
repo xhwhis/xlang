@@ -155,6 +155,46 @@ namespace xlang {
         return ;
     }
     
+    // IntValue operator&
+    IntValueAndOpVisitor::IntValueAndOpVisitor(IntValue *left) : IntValueOperator(left, &IValue::operator_and_error) {}
+    
+    void IntValueAndOpVisitor::visit(IntValue *obj) {
+        this->result = std::make_shared<IntValue>(left->val() & obj->val());
+        return ;
+    }
+    
+    // IntValue operator|
+    IntValueOrOpVisitor::IntValueOrOpVisitor(IntValue *left) : IntValueOperator(left, &IValue::operator_or_error) {}
+    
+    void IntValueOrOpVisitor::visit(IntValue *obj) {
+        this->result = std::make_shared<IntValue>(left->val() | obj->val());
+        return ;
+    }
+    
+    // IntValue operator^
+    IntValueXorOpVisitor::IntValueXorOpVisitor(IntValue *left) : IntValueOperator(left, &IValue::operator_xor_error) {}
+    
+    void IntValueXorOpVisitor::visit(IntValue *obj) {
+        this->result = std::make_shared<IntValue>(left->val() ^ obj->val());
+        return ;
+    }
+    
+    // IntValue operator<<
+    IntValueLShiftOpVisitor::IntValueLShiftOpVisitor(IntValue *left) : IntValueOperator(left, &IValue::operator_lshift_error) {}
+    
+    void IntValueLShiftOpVisitor::visit(IntValue *obj) {
+        this->result = std::make_shared<IntValue>(left->val() << obj->val());
+        return ;
+    }
+    
+    // IntValue operator>>
+    IntValueRShiftOpVisitor::IntValueRShiftOpVisitor(IntValue *left) : IntValueOperator(left, &IValue::operator_rshift_error) {}
+    
+    void IntValueRShiftOpVisitor::visit(IntValue *obj) {
+        this->result = std::make_shared<IntValue>(left->val() >> obj->val());
+        return ;
+    }
+    
     // IntValue operator<
     IntValueLittleOpVisitor::IntValueLittleOpVisitor(IntValue *left) : IntValueOperator(left, &IValue::operator_compare_error){}
     

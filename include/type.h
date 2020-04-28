@@ -29,6 +29,11 @@ namespace xlang {
         virtual SIValue operator*(IValue &);
         virtual SIValue operator/(IValue &);
         virtual SIValue operator%(IValue &);
+        virtual SIValue operator&(IValue &);
+        virtual SIValue operator|(IValue &);
+        virtual SIValue operator^(IValue &);
+        virtual SIValue operator<<(IValue &);
+        virtual SIValue operator>>(IValue &);
         virtual bool operator<(IValue &);
         virtual bool operator>(IValue &);
         virtual bool operator<=(IValue &);
@@ -40,6 +45,11 @@ namespace xlang {
         void operator_times_error(IValue &);
         void operator_div_error(IValue &);
         void operator_mod_error(IValue &);
+        void operator_and_error(IValue &);
+        void operator_or_error(IValue &);
+        void operator_xor_error(IValue &);
+        void operator_lshift_error(IValue &);
+        void operator_rshift_error(IValue &);
         void operator_compare_error(IValue &);
     protected:
         std::string __type;
@@ -55,6 +65,11 @@ namespace xlang {
         virtual SIValue operator*(IValue &);
         virtual SIValue operator/(IValue &);
         virtual SIValue operator%(IValue &);
+        virtual SIValue operator&(IValue &);
+        virtual SIValue operator|(IValue &);
+        virtual SIValue operator^(IValue &);
+        virtual SIValue operator<<(IValue &);
+        virtual SIValue operator>>(IValue &);
         virtual bool operator<(IValue &);
         int val();
     private:
