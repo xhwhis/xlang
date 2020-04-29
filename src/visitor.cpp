@@ -179,6 +179,14 @@ namespace xlang {
         return ;
     }
     
+    // IntValue operator~
+    IntValueNorOpVisitor::IntValueNorOpVisitor(IntValue *left) : IntValueOperator(left, &IValue::operator_nor_error) {}
+    
+    void IntValueNorOpVisitor::visit(IntValue *obj) {
+        this->result = std::make_shared<IntValue>(~left->val());
+        return ;
+    }
+    
     // IntValue operator<<
     IntValueLShiftOpVisitor::IntValueLShiftOpVisitor(IntValue *left) : IntValueOperator(left, &IValue::operator_lshift_error) {}
     

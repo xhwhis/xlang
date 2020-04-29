@@ -32,6 +32,7 @@ namespace xlang {
         virtual SIValue operator&(IValue &);
         virtual SIValue operator|(IValue &);
         virtual SIValue operator^(IValue &);
+        virtual SIValue operator~();
         virtual SIValue operator<<(IValue &);
         virtual SIValue operator>>(IValue &);
         virtual bool operator<(IValue &);
@@ -48,6 +49,7 @@ namespace xlang {
         void operator_and_error(IValue &);
         void operator_or_error(IValue &);
         void operator_xor_error(IValue &);
+        void operator_nor_error(IValue &);
         void operator_lshift_error(IValue &);
         void operator_rshift_error(IValue &);
         void operator_compare_error(IValue &);
@@ -68,6 +70,7 @@ namespace xlang {
         virtual SIValue operator&(IValue &);
         virtual SIValue operator|(IValue &);
         virtual SIValue operator^(IValue &);
+        virtual SIValue operator~();
         virtual SIValue operator<<(IValue &);
         virtual SIValue operator>>(IValue &);
         virtual bool operator<(IValue &);

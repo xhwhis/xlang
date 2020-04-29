@@ -106,6 +106,12 @@ namespace xlang {
         void visit(IntValue *);
     };
     
+    class IntValueNorOpVisitor : public IntValueOperator {
+    public:
+        IntValueNorOpVisitor(IntValue *);
+        void visit(IntValue *);
+    };
+    
     class IntValueLShiftOpVisitor : public IntValueOperator {
     public:
         IntValueLShiftOpVisitor(IntValue *);

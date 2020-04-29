@@ -47,7 +47,9 @@ multExpr
 
 atom
     : INT
+    | BIT_NOR^ INT
     | ID
+    | BIT_NOR^ ID
     | DOUBLE_PLUS ID -> ^(L_DOUBLE_PLUS ID)
     | ID DOUBLE_PLUS -> ^(R_DOUBLE_PLUS ID)
     | DOUBLE_MINUS ID -> ^(L_DOUBLE_MINUS ID)
@@ -56,20 +58,21 @@ atom
     | FLOAT
     | func_call
     | list_atom -> ^(LIST list_atom)
-    | list_id -> ^(LIST_CALL list_id)
+    | ID list_call_ind -> ^(LIST_CALL ID list_call_ind)
     | '('! expr ')'!
+    | BIT_NOR^ '('! expr ')'!
     ;
 
 list_atom
-    : '['! exprs? ']'!
+    : '['! listExpr? ']'!
     ;
 
-exprs
+listExpr
     : expr (','! expr)*
     ;
 
-list_id
-    : ID '['! expr ']'!
+list_call_ind
+    : ('['! expr ']'!)+
     ;
 
 if_expr
@@ -154,7 +157,7 @@ print_atom
 expr_stmt
     : expr ';' -> expr // tree rewrite syntax
     | ID ASSIGN expr ';' -> ^(ASSIGN ID expr) // tree notation
-    | ID '[' INT ']' ASSIGN expr ';' -> ^(LIST_DEF ID INT expr)
+    | ID '[' list_def_ind ']' ASSIGN expr ';' -> ^(LIST_DEF ID list_def_ind expr)
     | ID PLUS ASSIGN expr ';' -> ^(ASSIGN ID ^(PLUS ID expr))
     | ID MINUS ASSIGN expr ';' -> ^(ASSIGN ID ^(MINUS ID expr))
     | ID TIMES ASSIGN expr ';' -> ^(ASSIGN ID ^(TIMES ID expr))
@@ -166,6 +169,11 @@ expr_stmt
     | ID L_SHIFT ASSIGN expr ';' -> ^(ASSIGN ID ^(L_SHIFT ID expr))
     | ID R_SHIFT ASSIGN expr ';' -> ^(ASSIGN ID ^(R_SHIFT ID expr))
     | PRINT^ print_atom (','! print_atom)* ';'!
+    ;
+
+list_def_ind
+    : INT
+    | ID
     ;
 
 control_stmt
@@ -211,11 +219,9 @@ stmt
 
 prog: 
     (stmt {
-            //#ifdef DEBUG
             pANTLR3_STRING s = $stmt.tree->toStringTree($stmt.tree);
             assert(s->chars);
             printf("tree \%s\n", s->chars);
-            //#endif
         }
     )+
     ;
@@ -231,6 +237,7 @@ MOD: '%';
 BIT_AND: '&';
 BIT_OR: '|';
 BIT_XOR: '^';
+BIT_NOR: '~';
 L_SHIFT: '<<';
 R_SHIFT: '>>';
 DOUBLE_PLUS: '++';

@@ -141,6 +141,12 @@ namespace xlang {
         return xlang::null_val;
     }
     
+    SIValue IValue::operator~() {
+        IntValue obj;
+        this->operator_nor_error(obj);
+        return xlang::null_val;
+    }
+    
     SIValue IValue::operator<<(IValue &obj) {
         this->operator_lshift_error(obj);
         return xlang::null_val;
@@ -232,6 +238,13 @@ namespace xlang {
         return ;
     }
     
+    void IValue::operator_nor_error(IValue &obj) {
+        std::string msg = "bad operand type for unary ~: ";
+        msg += "~" + this->type();
+        throw std::runtime_error(msg);
+        return ;
+    }
+    
     void IValue::operator_lshift_error(IValue &obj) {
         std::string msg = "unsupported operand type(s) for <<: ";
         msg += this->type() + " << " + obj.type();
@@ -302,6 +315,13 @@ namespace xlang {
     
     SIValue IntValue::operator^(IValue &obj) {
         IntValueXorOpVisitor vis(this);
+        obj.accept(&vis);
+        return vis.result;
+    }
+    
+    SIValue IntValue::operator~() {
+        IntValueNorOpVisitor vis(this);
+        IntValue obj;
         obj.accept(&vis);
         return vis.result;
     }
@@ -437,10 +457,13 @@ namespace xlang {
         obj->accept(&vis);
         if (obj->type() != "int") {
             throw std::runtime_error("list indices must be integers");
+            return xlang::null_val;
         }
         int ind = stoi(vis.result);
-        if (ind >= this->__val.size()) {
+        if (ind < 0) ind += this->__val.size();
+        if (ind >= this->__val.size() || ind < 0) {
             throw std::runtime_error("list index out of range");
+            return xlang::null_val;
         }
         return this->__val[ind];
     }
@@ -449,8 +472,10 @@ namespace xlang {
         ConvertStringVisitor vis;
         obj->accept(&vis);
         int ind = stoi(vis.result);
-        if (ind >= this->__val.size()) {
+        if (ind < 0) ind += this->__val.size();
+        if (ind >= this->__val.size() || ind < 0) {
             throw std::runtime_error("list assignment index out of range");
+            return ;
         }
         this->__val[ind] = val;
         return ;

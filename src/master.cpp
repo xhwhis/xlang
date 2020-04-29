@@ -69,8 +69,13 @@ namespace xlang {
             }
             case LIST_CALL: {
                 auto list = p->get(tree->at(0)->text());
-                SIValue ind = Runtime::GetValue(tree->at(1), p);
-                return list->at(ind);
+                SIValue val;
+                for (int i = 1; i < tree->size(); i++) {
+                    SIValue ind = Runtime::GetValue(tree->at(i), p);
+                    if (i == 1) val = list->at(ind);
+                    else val = val->at(ind);
+                }
+                return val;
             }
             case LIST_DEF: {
                 auto list = p->get(tree->at(0)->text());
@@ -124,6 +129,10 @@ namespace xlang {
                 SIValue a = Runtime::GetValue(tree->at(0), p);
                 SIValue b = Runtime::GetValue(tree->at(1), p);
                 return (*a) ^ (*b);
+            }
+            case BIT_NOR: {
+                SIValue a = Runtime::GetValue(tree->at(0), p);
+                return ~(*a);
             }
             case L_SHIFT: {
                 SIValue a = Runtime::GetValue(tree->at(0), p);

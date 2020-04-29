@@ -11,4 +11,8 @@
     def c = [a, 2, 3];
     print c;
     print c[0];
+    print c[0][0];
+    print c[1][1];
+    print c[-2];
+    print c[-100];
 }

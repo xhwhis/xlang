@@ -60,6 +60,7 @@ namespace xlang {
             case BIT_AND:
             case BIT_OR:
             case BIT_XOR:
+            case BIT_NOR:
             case L_SHIFT:
             case R_SHIFT:
             case L_DOUBLE_PLUS:
