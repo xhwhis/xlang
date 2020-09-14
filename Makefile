@@ -10,4 +10,4 @@ clean:
 	-rm -rf ./bin/xlang
 
 run:
-	./bin/xlang ./test.x
+	./bin/xlang ./test/test.x
