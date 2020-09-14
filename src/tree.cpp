@@ -1,4 +1,4 @@
-#include <exception>
+#include <stdexcept>
 #include <cassert>
 #include <tree.h>
 
