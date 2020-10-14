@@ -1,13 +1,20 @@
-.PHONY: run
-all : ./grammar/x.g ./src/main.cpp
-	make clean
+CXX = g++
+CXXFLAGS = -I ./grammar/antlr/libantlr3c -I./include -I./grammar
+LDFLAGS = -lantlr3c -L /usr/bin -L ./grammar/antlr
+RM = rm -f
+TARGET = ./bin/xlang
+
+all: clean obj
+
+obj:
 	java -jar ./grammar/antlr/antlr.jar ./grammar/x.g
 	mv ./x.tokens ./grammar/
-	g++ -I./grammar/antlr/libantlr3c/ -L./grammar/antlr -lantlr3c -I./include/ -I./grammar/ ./src/*.cpp ./grammar/*.c -o ./bin/xlang
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) ./src/*.cpp ./grammar/*.c -o $(TARGET)
 
+.PHONY: clean
 clean:
-	-rm -rf ./grammar/*.c ./grammar/*.h ./grammar/x.tokens
-	-rm -rf ./bin/xlang
+	$(RM) ./grammar/*.c ./grammar/*.h ./grammar/x.tokens
+	$(RM) ./bin/xlang
 
 run:
-	./bin/xlang ./test/test.x
+	$(TARGET) ./test/test.x
