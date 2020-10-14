@@ -4,9 +4,9 @@ LDFLAGS = -lantlr3c -L /usr/bin -L ./grammar/antlr
 RM = rm -f
 TARGET = ./bin/xlang
 
-all: clean obj
+all: clean xlang
 
-obj:
+xlang:
 	java -jar ./grammar/antlr/antlr.jar ./grammar/x.g
 	mv ./x.tokens ./grammar/
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) ./src/*.cpp ./grammar/*.c -o $(TARGET)
