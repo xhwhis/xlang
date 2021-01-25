@@ -1,15 +1,17 @@
-CXX = g++
-CXXFLAGS = -I ./grammar/antlr/libantlr3c -I./include -I./grammar
-LDFLAGS = -lantlr3c -L /usr/bin -L ./grammar/antlr
+CPP = clang++
+CFLAGS = -std=c++11
+CPPFLAGS = -I./third/libantlr3c/include -I./grammar -I./include
+LDFLAGS = -L./third/libantlr3c/lib
+LIBS = -lantlr3c
 RM = rm -f
 TARGET = ./bin/xlang
 
 all: clean xlang
 
 xlang:
-	java -jar ./grammar/antlr/antlr.jar ./grammar/x.g
-	mv ./x.tokens ./grammar/
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) ./src/*.cpp ./grammar/*.c -o $(TARGET)
+	java -jar ./third/antlr-3.4-complete.jar ./grammar/x.g
+	mv ./x.tokens ./grammar
+	$(CPP) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LIBS) ./src/*.cpp ./grammar/*.c -o $(TARGET)
 
 .PHONY: clean
 clean:
@@ -17,4 +19,4 @@ clean:
 	$(RM) ./bin/xlang
 
 run:
-	$(TARGET) ./test/test.x
+	$(TARGET) ./test/test7.x
