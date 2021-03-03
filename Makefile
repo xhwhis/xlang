@@ -1,7 +1,7 @@
 CPP = clang++
 CFLAGS = -std=c++11
-CPPFLAGS = -I./third/libantlr3c/include -I./grammar -I./include
-LDFLAGS = -L./third/libantlr3c/lib
+CPPFLAGS = -I./3rdparty/libantlr3c/include -I./grammar -I./include
+LDFLAGS = -L./3rdparty/libantlr3c/lib
 LIBS = -lantlr3c
 RM = rm -f
 TARGET = ./bin/xlang
@@ -9,7 +9,7 @@ TARGET = ./bin/xlang
 all: clean xlang
 
 xlang:
-	java -jar ./third/antlr-3.4-complete.jar ./grammar/x.g
+	java -jar ./3rdparty/antlr-3.4-complete.jar ./grammar/x.g
 	mv ./x.tokens ./grammar
 	$(CPP) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LIBS) ./src/*.cpp ./grammar/*.c -o $(TARGET)
 

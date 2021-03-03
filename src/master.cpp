@@ -22,7 +22,7 @@ namespace xlang {
     ControlMaster::ControlMaster(ASTree *tree, SParameter p) : IMaster(tree, p) {}
 
     void IMaster::IFactory::destory(IMaster *m) {
-        delete m;
+        delete m;		
     }
     
     SIValue PrintMaster::run() {
