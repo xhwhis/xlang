@@ -19,4 +19,4 @@ clean:
 	$(RM) ./bin/xlang
 
 run:
-	$(TARGET) ./test/test7.x
+	$(TARGET) ./examples/7.x
