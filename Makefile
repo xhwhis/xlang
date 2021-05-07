@@ -1,4 +1,4 @@
-CPP = clang++
+CPP = g++
 CFLAGS = -std=c++11
 CPPFLAGS = -I./3rdparty/libantlr3c/include -I./grammar -I./include
 LDFLAGS = -L./3rdparty/libantlr3c/lib
