@@ -1,153 +1,151 @@
 grammar x;
 
 options {
-    language = C;
-    output = AST;
-    ASTLabelType=pANTLR3_BASE_TREE;
+    language = Cpp;
 }
 
 @header {
     #include <assert.h>
 }
 
-// The suffix '^' means make it a root.
-// The suffix '!' means ignore it.
-
 defid_expr
-    : DEF! defid (','! defid)*
+    : DEF defid (',' defid)*
     ;
 
 defid
-    : ID^ (ASSIGN! condition_expr)?
+    : ID (ASSIGN condition_expr)?
     ;
 
 expr
-    : bit_orExpr (BIT_OR^ bit_orExpr)*
+    : bit_orExpr (BIT_OR bit_orExpr)*
     ;
 
 bit_orExpr
-    : bit_xorExpr (BIT_XOR^ bit_xorExpr)*
+    : bit_xorExpr (BIT_XOR bit_xorExpr)*
     ;
 
 bit_xorExpr
-    : bit_andExpr (BIT_AND^ bit_andExpr)*
+    : bit_andExpr (BIT_AND bit_andExpr)*
     ;
 
 bit_andExpr
-    : shiftExpr ((L_SHIFT^ | R_SHIFT^) shiftExpr)*
+    : shiftExpr ((L_SHIFT | R_SHIFT) shiftExpr)*
     ;
 
 shiftExpr
-    : multExpr ((PLUS^ | MINUS^) multExpr)*
+    : multExpr ((PLUS | MINUS) multExpr)*
     ;
 
 multExpr
-    : atom ((TIMES^ | DIV^ | MOD^) atom)*
+    : atom ((TIMES | DIV | MOD) atom)*
     ;
 
 atom
     : INT
-    | BIT_NOR^ INT
+    | BIT_NOR INT
     | ID
-    | BIT_NOR^ ID
-    | DOUBLE_PLUS ID -> ^(L_DOUBLE_PLUS ID)
-    | ID DOUBLE_PLUS -> ^(R_DOUBLE_PLUS ID)
-    | DOUBLE_MINUS ID -> ^(L_DOUBLE_MINUS ID)
-    | ID DOUBLE_MINUS -> ^(R_DOUBLE_MINUS ID)
+    | BIT_NOR ID
+    | DOUBLE_PLUS ID
+    | ID DOUBLE_PLUS
+    | DOUBLE_MINUS ID
+    | ID DOUBLE_MINUS
     | STRING
     | FLOAT
     | func_call
-    | list_atom -> ^(LIST list_atom)
-    | ID list_call_ind -> ^(LIST_CALL ID list_call_ind)
-    | '('! expr ')'!
-    | BIT_NOR^ '('! expr ')'!
+    | list_atom
+    | ID list_call_ind
+    | '(' expr ')'
+    | BIT_NOR '(' expr ')'
     ;
 
 list_atom
-    : '['! listExpr? ']'!
+    : '[' listExpr? ']'
     ;
 
 listExpr
-    : expr (','! expr)*
+    : expr (',' expr)*
     ;
 
 list_call_ind
-    : ('['! expr ']'!)+
+    : ('[' expr ']')+
+    ;
+
+stmt
+    : expr_stmt
+    | control_stmt
+    | func_stmt
     ;
 
 if_expr
-    : IF^ '('! condition_expr ')'! stmt ( (ELSE) => ELSE! stmt )?
+    : IF '(' condition_expr ')' stmt (ELSE stmt)?
     ;
 
 for_expr
-    : FOR^ '('! init_expr ';'! condition_expr ';'! for_do_expr ')'! stmt
+    : FOR '(' init_expr ';' condition_expr ';' for_do_expr ')' stmt
     ;
 
 while_expr
-    : WHILE^ '('! condition_expr ')'! stmt
-    | DO block WHILE '(' condition_expr ')' ';' -> ^(DOWHILE condition_expr block)
+    : WHILE '(' condition_expr ')' stmt
+    | DO block WHILE '(' condition_expr ')' ';'
     ;
 
 init_expr
-    : defid_expr -> ^(DEF defid_expr)
-    | ID ASSIGN expr -> ^(ASSIGN ID expr)
-    | -> ^(NOPE)
+    : defid_expr
+    | ID ASSIGN expr
     ;
 
 for_do_expr
-    : ID ASSIGN expr -> ^(ASSIGN ID expr)
-    | ID PLUS ASSIGN expr -> ^(ASSIGN ID ^(PLUS ID expr))
-    | ID MINUS ASSIGN expr -> ^(ASSIGN ID ^(MINUS ID expr))
-    | ID TIMES ASSIGN expr -> ^(ASSIGN ID ^(TIMES ID expr))
-    | ID DIV ASSIGN expr -> ^(ASSIGN ID ^(DIV ID expr))
-    | ID MOD ASSIGN expr -> ^(ASSIGN ID ^(MOD ID expr))
-    | ID BIT_AND ASSIGN expr -> ^(ASSIGN ID ^(BIT_AND ID expr))
-    | ID BIT_OR ASSIGN expr -> ^(ASSIGN ID ^(BIT_OR ID expr))
-    | ID BIT_XOR ASSIGN expr -> ^(ASSIGN ID ^(BIT_XOR ID expr))
-    | ID L_SHIFT ASSIGN expr -> ^(ASSIGN ID ^(L_SHIFT ID expr))
-    | ID R_SHIFT ASSIGN expr -> ^(ASSIGN ID ^(R_SHIFT ID expr))
-    | DOUBLE_PLUS ID -> ^(L_DOUBLE_PLUS ID)
-    | ID DOUBLE_PLUS -> ^(R_DOUBLE_PLUS ID)
-    | DOUBLE_MINUS ID -> ^(L_DOUBLE_MINUS ID)
-    | ID DOUBLE_MINUS -> ^(R_DOUBLE_MINUS ID)
-    | -> ^(NOPE)
+    : ID ASSIGN expr
+    | ID PLUS ASSIGN expr
+    | ID MINUS ASSIGN expr
+    | ID TIMES ASSIGN expr
+    | ID DIV ASSIGN expr
+    | ID MOD ASSIGN expr
+    | ID BIT_AND ASSIGN expr
+    | ID BIT_OR ASSIGN expr
+    | ID BIT_XOR ASSIGN expr
+    | ID L_SHIFT ASSIGN expr
+    | ID R_SHIFT ASSIGN expr
+    | DOUBLE_PLUS ID
+    | ID DOUBLE_PLUS
+    | DOUBLE_MINUS ID
+    | ID DOUBLE_MINUS
     ;
 
 switch_expr
-    : SWITCH^ '('! condition_expr ')'! '{'! case_expr+ default_expr? '}'!
+    : SWITCH '(' condition_expr ')' '{' case_expr+ default_expr? '}'
     ;
 
 case_expr
-    : CASE^ expr ':'! (stmt)*
+    : CASE expr ':' (stmt)*
     ;
 
 default_expr
-    : DEFAULT^ ':'! (stmt)*
+    : DEFAULT ':' (stmt)*
     ;
 
 condition_expr
-    : andExpr (OR^ andExpr)*
+    : andExpr (OR andExpr)*
     ;
 
 andExpr
-    : cmp_atom (AND^ cmp_atom)*
+    : cmp_atom (AND cmp_atom)*
     ;
 
 cmp_atom
-    : cond_atom ((GT^ | LITTLE^ | EQ^ | GE^ | LE^ | NE^) cond_atom)?
+    : cond_atom ((GT | LITTLE | EQ | GE | LE | NE) cond_atom)?
     ;
 
 cond_atom
     : expr
-    | -> ^(NOPE)
     ;
 
 block
-    : block_expr -> ^(BLOCK block_expr)
+    : block_expr
     ;
 
 block_expr
-    : '{'! (stmt)* '}'!
+    : '{' (stmt)* '}'
     ;
 
 print_atom
@@ -155,20 +153,20 @@ print_atom
     ;
 
 expr_stmt
-    : expr ';' -> expr // tree rewrite syntax
-    | ID ASSIGN expr ';' -> ^(ASSIGN ID expr) // tree notation
-    | ID '[' list_def_ind ']' ASSIGN expr ';' -> ^(LIST_DEF ID list_def_ind expr)
-    | ID PLUS ASSIGN expr ';' -> ^(ASSIGN ID ^(PLUS ID expr))
-    | ID MINUS ASSIGN expr ';' -> ^(ASSIGN ID ^(MINUS ID expr))
-    | ID TIMES ASSIGN expr ';' -> ^(ASSIGN ID ^(TIMES ID expr))
-    | ID DIV ASSIGN expr ';' -> ^(ASSIGN ID ^(DIV ID expr))
-    | ID MOD ASSIGN expr ';' -> ^(ASSIGN ID ^(MOD ID expr))
-    | ID BIT_AND ASSIGN expr ';' -> ^(ASSIGN ID ^(BIT_AND ID expr))
-    | ID BIT_OR ASSIGN expr ';' -> ^(ASSIGN ID ^(BIT_OR ID expr))
-    | ID BIT_XOR ASSIGN expr ';' -> ^(ASSIGN ID ^(BIT_XOR ID expr))
-    | ID L_SHIFT ASSIGN expr ';' -> ^(ASSIGN ID ^(L_SHIFT ID expr))
-    | ID R_SHIFT ASSIGN expr ';' -> ^(ASSIGN ID ^(R_SHIFT ID expr))
-    | PRINT^ print_atom (','! print_atom)* ';'!
+    : expr ';'
+    | ID ASSIGN expr ';'
+    | ID '[' list_def_ind ']' ASSIGN expr ';'
+    | ID PLUS ASSIGN expr ';'
+    | ID MINUS ASSIGN expr ';'
+    | ID TIMES ASSIGN expr ';'
+    | ID DIV ASSIGN expr ';'
+    | ID MOD ASSIGN expr ';'
+    | ID BIT_AND ASSIGN expr ';'
+    | ID BIT_OR ASSIGN expr ';'
+    | ID BIT_XOR ASSIGN expr ';'
+    | ID L_SHIFT ASSIGN expr ';'
+    | ID R_SHIFT ASSIGN expr ';'
+    | PRINT print_atom (',' print_atom)* ';'
     ;
 
 list_def_ind
@@ -180,46 +178,40 @@ control_stmt
     : for_expr
     | if_expr
     | while_expr
-    | defid_expr ';' -> ^(DEF defid_expr)
+    | defid_expr ';'
     | block
-    | BREAK ';'!
-    | CONTINUE ';'!
-    | RETURN^ condition_expr ';'!
+    | BREAK ';'
+    | CONTINUE ';'
+    | RETURN condition_expr ';'
     ;
 
 func_stmt
-    : FUNC^ ID param block
+    : FUNC ID param block
     ;
 
 param
-    : '(' id_param? ')' -> ^(PARAM id_param?)
+    : '(' id_param? ')'
     ;
 
 id_param
-    : ID (','! ID)*
+    : ID (',' ID)*
     ;
 
 func_call
-    : ID param_expr -> ^(FUNC_CALL ID param_expr)
+    : ID param_expr
     ;
 
 param_expr
-    : '(' cond_param ')' -> ^(PARAM cond_param)
+    : '(' cond_param ')'
     ;
 
 cond_param
-    : condition_expr (','! condition_expr)*
-    ;
-
-stmt
-    : expr_stmt
-    | control_stmt
-    | func_stmt
+    : condition_expr (',' condition_expr)*
     ;
 
 prog: 
     (stmt {
-            pANTLR3_STRING s = $stmt.tree->toStringTree($stmt.tree);
+            pANTLR3_STRING s = stmt(tree)->toStringTree(stmt(tree));
             assert(s->chars);
             printf("tree \%s\n", s->chars);
         }
@@ -267,7 +259,6 @@ FOR: 'for';
 WHILE: 'while';
 DO: 'do';
 DOWHILE: 'dowhile';
-NOPE: '404';
 LIST: 'list';
 LIST_CALL: 'list_call';
 LIST_DEF: 'list_def';
@@ -287,15 +278,14 @@ FLOAT
     ;
 
 COMMENT
-    : '//' ~('\n'|'\r')* '\r'? '\n' {$channel=HIDDEN;}
-    | '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;}
+    : '//' ~('\n'|'\r')* '\r'? '\n' {channel(HIDDEN);}
     ;
 
 WS: ( ' '
     | '\t'
     | '\r'
     | '\n'
-    ) {$channel=HIDDEN;}
+    ) {channel(HIDDEN);}
     ;
 
 STRING
@@ -310,7 +300,7 @@ HEX_DIGIT: ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 fragment
 ESC_SEQ
-    : '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
+    : '\\' ('b' | 't' | 'n' | 'f' | 'r' | '\'' | '\\')
     | UNICODE_ESC
     | OCTAL_ESC
     ;

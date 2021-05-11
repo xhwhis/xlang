@@ -15,7 +15,7 @@ xlang:
 
 .PHONY: clean
 clean:
-	$(RM) ./grammar/*.c ./grammar/*.h ./grammar/x.tokens
+	$(RM) ./grammar/*.cpp ./grammar/*.h ./grammar/*.tokens ./grammar/*.interp
 	$(RM) ./bin/xlang
 
 run:
