@@ -59,6 +59,7 @@ atom
     | func_call
     | list_atom -> ^(LIST list_atom)
     | ID list_call_ind -> ^(LIST_CALL ID list_call_ind)
+    | ENTER^ '('! expr ')'!
     | '('! expr ')'!
     | BIT_NOR^ '('! expr ')'!
     ;
@@ -155,8 +156,8 @@ print_atom
     ;
 
 expr_stmt
-    : expr ';' -> expr // tree rewrite syntax
-    | ID ASSIGN expr ';' -> ^(ASSIGN ID expr) // tree notation
+    : expr ';' -> expr
+    | ID ASSIGN expr ';' -> ^(ASSIGN ID expr)
     | ID '[' list_def_ind ']' ASSIGN expr ';' -> ^(LIST_DEF ID list_def_ind expr)
     | ID PLUS ASSIGN expr ';' -> ^(ASSIGN ID ^(PLUS ID expr))
     | ID MINUS ASSIGN expr ';' -> ^(ASSIGN ID ^(MINUS ID expr))
@@ -228,6 +229,7 @@ prog:
 
 DEF: 'def';
 PRINT: 'print';
+ENTER: 'enter';
 ASSIGN: '=';
 PLUS: '+';
 MINUS: '-';

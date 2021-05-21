@@ -178,6 +178,16 @@ namespace xlang {
                 p->set(var, val);
                 return val;
             }
+            case ENTER: {
+                SIValue ret = Runtime::GetValue(tree->at(0), p);
+                ConvertStringVisitor vis;
+                ret->accept(&vis);
+                std::cout << vis.result;
+                std::string tmp = "";
+                std::cin >> tmp;
+                SStringValue val = std::make_shared<StringValue>(tmp);
+                return val;
+            }
             case DEF: {
                 for (int i = 0; i < tree->size(); i++) {
                     std::string var = tree->at(i)->text();

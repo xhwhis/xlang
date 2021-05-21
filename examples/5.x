@@ -9,4 +9,7 @@
     def a2 = addx(2);
     print a1(2, 3);
     print a2(3, 4);
+    print addx;
+    addx = 1;
+    print addx;
 }

@@ -68,6 +68,7 @@ namespace xlang {
             case L_DOUBLE_MINUS:
             case R_DOUBLE_MINUS:
             case ASSIGN:
+            case ENTER:
             case DEF:
             case FUNC_CALL:
                 return true;
