@@ -1,4 +1,5 @@
 {
-    def a = enter("please enter: ");
+    def a;
+    a = enter("please enter: ");
     print a;
 }
